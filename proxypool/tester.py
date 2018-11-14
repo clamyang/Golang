@@ -11,6 +11,10 @@ except:
 from proxypool.db import RedisClient
 from proxypool.setting import *
 
+VALID_STATUS_CODES = [200]
+TEST_URL = 'http://www.baidu.com'
+BATCH_TEST_SIZE = 100
+
 class Tester(object):
     def __init__(self):
         self.redis = RedisClient()
@@ -50,7 +54,7 @@ class Tester(object):
             loop = asyncio.get_event_loop()
             # 批量测试
             for i in range(0, len(proxies), BATCH_TEST_SIZE):
-                test_proxies = proxies[i:i + BATCH_TEST_SIZE]
+                test_proxies = proxies[i: i + BATCH_TEST_SIZE]
                 tasks = [self.test_single_proxy(proxy) for peoxy in test_proxies]
                 loop.run_until_complete(asyncio.wait(tasks))
                 time.sleep(5)
