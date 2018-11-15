@@ -28,6 +28,7 @@ class Tester(object):
         conn = aiohttp.TCPConnector(verify_ssl=False)
         async with aiohttp.ClientSession(connector=conn) as session:
             try:
+                # 判断proxy的数据类型
                 if isinstance(proxy, bytes):
                     proxy = proxy.decode('utf-8')
                 real_proxy = 'http://' + proxy
@@ -51,13 +52,17 @@ class Tester(object):
         print('测试器开始执行')
         try:
             proxies = self.redis.all()
+            # 创建事件循环
             loop = asyncio.get_event_loop()
             # 批量测试
             for i in range(0, len(proxies), BATCH_TEST_SIZE):
                 test_proxies = proxies[i: i + BATCH_TEST_SIZE]
+                # 创建多个协程的列表，然后将这些协程注册到事件循环中
                 tasks = [self.test_single_proxy(proxy) for peoxy in test_proxies]
+                # 协程注册到事件循环，并启动事件循环
                 loop.run_until_complete(asyncio.wait(tasks))
                 time.sleep(5)
         except Exception as e:
             print('测试器发生错误', e.args)
 
+###修
