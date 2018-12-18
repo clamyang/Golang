@@ -1,3 +1,4 @@
+# 高阶函数
 def funA(n):
     return n * 100
 
